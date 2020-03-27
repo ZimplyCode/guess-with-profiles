@@ -28,7 +28,7 @@ def login():
     hashed_password = hashlib.sha256(password.encode()).hexdigest()
 
     # create a secret number
-    secret_number = random.randint(1, 30)
+    secret_number = random.randint(1, 100)
 
     # see if user already exists
     user = db.query(User).filter_by(email=email_address).first()
@@ -82,7 +82,7 @@ def result():
     elif guess > user.secret_number:
         title = "Guess to high!"
         message = "Your guess is not correct... try something smaller."
-    elif guess < user.secret_number:
+    else:
         title = "Guess to low!"
         message = "Your guess is not correct... try something bigger."
 
