@@ -1,9 +1,10 @@
 import random, uuid, hashlib
 from flask import Flask, render_template, request, make_response, redirect, url_for
-from models import User, db
+from models import User, Comment, db
 
 app = Flask(__name__)
 db.create_all()
+
 
 @app.route("/", methods=["GET"])
 def index():
@@ -156,11 +157,39 @@ def all_users():
     return render_template("users.html", users=users, title="All users")
 
 
-@app.route("/user/<user_email>", methods=["GET"])
-def user_details(user_email):
-    user = db.query(User).get(user_email)  # .get() can help you query by the EMail
+@app.route("/user/<user_id>", methods=["GET"])
+def user_details(user_id):
+    user = db.query(User).get(user_id)  # .get() can help you query by the EMail
 
     return render_template("user_details.html", user=user, title="User details")
+
+
+@app.route("/comments", methods=["GET", "POST"])
+def comments():
+    session_token = request.cookies.get("session_token")
+
+    # get user from the database based on her/his email address
+    user = db.query(User).filter_by(session_token=session_token).first()
+    users = db.query(User).all()
+    comments = db.query(Comment).all()
+
+    if request.method == "GET":
+        if user:  # if user is found
+            return render_template("comments.html", user=user, users=users, comments=comments, title="Leave a comment, and make us happy!")
+        else:
+            return redirect(url_for("index"))
+    else:
+        userid = request.form.get("user-id")
+        usercomment = request.form.get("user-comment")
+
+        # update the user object
+        comment = Comment(userid=userid, comment=usercomment)
+
+        # store changes into the database
+        db.add(comment)
+        db.commit()
+
+        return redirect(url_for("comments"))
 
 
 if __name__ == '__main__':

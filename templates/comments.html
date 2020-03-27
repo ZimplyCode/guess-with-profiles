@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>Leave a comment</h3>
+
+<form method="post">
+    <p>
+        <strong>Your name: {{ user.name }}</strong>
+        <input type="hidden" value="{{ user.id }}" name="user-id">
+    </p>
+
+    <p>
+        <strong>Comment:</strong>
+        <input type="text" placeholder="Your comment" name="user-comment">
+    </p>
+
+    <button>Submit</button>
+</form>
+
+{% for comment in comments %}
+<strong>Userid: </strong><a href="/user/{{ comment.userid }}">{{ comment.userid }}</a><br/>
+{{ comment.comment }}<br/><br/>
+{% endfor %}
+
+{% endblock content %}
