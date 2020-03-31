@@ -3,10 +3,12 @@
 {% block content %}
 <h3>Users</h3>
 
-<ul>
+<table>
+    <th>User</th><th># Games</th><th>Total Guess</th><th>Best game</th>
 {% for user in users %}
-    <li><a href="/user/{{ user.id }}">{{ user.name }}</a></li>
+    <tr>
+        <td><a href="/user/{{ user.id }}">{{ user.name }}</a></td><td>{{ user.games_won }}</td><td>{{ user.total_guesses }}</td><td>{{ user.best_game }}</td>
+    </tr>
 {% endfor %}
-</ul>
-
+</table>
 {% endblock content %}

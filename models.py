@@ -11,9 +11,10 @@ class User(db.Model):
     password = db.Column(db.String)
     session_token = db.Column(db.String)
     secret_number = db.Column(db.Integer)
-    best_game = db.Column(db.Integer)
-    total_guesses = db.Column(db.Integer)
-    games_won = db.Column(db.Integer)
+    best_game = db.Column(db.Integer, default=100)
+    current_guesses = db.Column(db.Integer, default=0)
+    total_guesses = db.Column(db.Integer, default=0)
+    games_won = db.Column(db.Integer, default=0)
 
 
 class Comment(db.Model):

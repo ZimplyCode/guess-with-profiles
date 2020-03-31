@@ -63,11 +63,12 @@ def login():
 @app.route("/result", methods=["POST"])
 def result():
     guess = int(request.form.get("guess"))
-
     session_token = request.cookies.get("session_token")
 
     # get user from the database based on her/his email address
     user = db.query(User).filter_by(session_token=session_token).first()
+    user.current_guesses += 1
+    print(user.current_guesses)
 
     if guess == user.secret_number:
         title = "Succes!"
@@ -78,14 +79,22 @@ def result():
 
         # update the user's secret number in the User collection
         user.secret_number = new_secret
-        db.add(user)
-        db.commit()
+        if user.best_game > user.current_guesses:
+            print("The new best score: " + str(user.current_guesses))
+            user.best_game = user.current_guesses
+        user.total_guesses += user.current_guesses
+        user.current_guesses = 0
+        user.games_won += 1
     elif guess > user.secret_number:
         title = "Guess to high!"
         message = "Your guess is not correct... try something smaller."
     else:
         title = "Guess to low!"
         message = "Your guess is not correct... try something bigger."
+
+    db.add(user)
+    db.commit()
+
 
     return render_template("result.html", message=message, title=title)
 
